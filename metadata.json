@@ -1,0 +1,9 @@
+
+{
+  "name": "GenZLaundry Enterprise",
+  "description": "Professional Multi-User Laundry Management Suite",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
