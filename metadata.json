@@ -1,0 +1,5 @@
+{
+  "name": "GenZLaundry Billing & Tagging System",
+  "description": "An offline-first, keyboard-centric billing and label tagging application for laundry shop owners, designed for thermal and label printers.",
+  "requestFramePermissions": []
+}
