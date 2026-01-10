@@ -97,7 +97,7 @@ export const HybridPrintingSolution: React.FC = () => {
     });
     
     const subtotal = calculateTotal();
-    const gst = Math.round(subtotal * 0.18); // 18% GST
+    const gst = Math.round(subtotal * 0); // 18% GST
     const discount = Math.round(subtotal * 0.05); // 5% discount
     const finalTotal = subtotal + gst - discount;
 
@@ -113,10 +113,10 @@ export const HybridPrintingSolution: React.FC = () => {
             Premium Laundry & Dry Cleaning Services
           </div>
           <div style="font-size: 9px; color: #666; margin-bottom: 1px;">
-            📍 123 Laundry Street, Delhi - 110001
+            📍 Sabji Mandi Circle, Ratanada Jodhpur-342022
           </div>
           <div style="font-size: 9px; color: #666; margin-bottom: 1px;">
-            📞 +91 98765 43210 | 🌐 genzlaundry.com
+            📞 +91 9256930727 | 🌐 genzlaundry.com
           </div>
           <div style="font-size: 8px; color: #666;">
             GST No: 07AABCU9603R1ZX | FSSAI: 12345678901234
@@ -244,19 +244,6 @@ export const HybridPrintingSolution: React.FC = () => {
           </div>
           <div style="font-size: 8px; color: #666;">
             💚 Eco-friendly processes | 🚚 Free home pickup/delivery
-          </div>
-        </div>
-
-        <!-- QR Code Area -->
-        <div style="text-align: center; margin: 6px 0;">
-          <div style="border: 2px dashed #666; padding: 8px; display: inline-block;">
-            <div style="font-size: 8px; margin-bottom: 2px;">📱 SCAN FOR TRACKING</div>
-            <div style="font-family: monospace; font-size: 6px; letter-spacing: 1px;">
-              ████ ██ ████ ██ ████<br>
-              ██ ████ ██ ████ ██ ██<br>
-              ████ ██ ████ ██ ████<br>
-            </div>
-            <div style="font-size: 7px; margin-top: 2px;">Bill: ${billNumber}</div>
           </div>
         </div>
 

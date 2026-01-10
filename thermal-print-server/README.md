@@ -95,8 +95,8 @@ async function printDirectThermal(receiptData) {
 // Usage in your POS system
 const receiptData = {
   businessName: 'GenZ Laundry',
-  address: '123 Laundry Street, Delhi - 110001',
-  phone: '+91 98765 43210',
+  address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+  phone: '+91 9256930727',
   customerName: 'Customer Name',
   billNumber: 'GenZ-024',
   items: [
@@ -122,8 +122,8 @@ Content-Type: application/json
 
 {
   "businessName": "GenZ Laundry",
-  "address": "123 Laundry Street, Delhi - 110001",
-  "phone": "+91 98765 43210",
+  "address": "Sabji Mandi Circle, Ratanada Jodhpur-342022",
+  "phone": "+91 9356930727",
   "customerName": "Customer Name",
   "billNumber": "GenZ-024",
   "items": [

@@ -312,8 +312,8 @@ app.post('/api/print/test', async (req, res) => {
   try {
     const testReceipt = {
       businessName: 'GenZ Laundry',
-      address: '123 Laundry Street, Delhi - 110001',
-      phone: '+91 98765 43210',
+      address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+      phone: '+91 9256930727',
       customerName: 'Test Customer',
       billNumber: 'TEST-001',
       items: [

@@ -25,8 +25,8 @@ export const LaundryPOSInterface: React.FC = () => {
   const [printerStatus, setPrinterStatus] = useState({ thermal: false, tsc: false });
   const [businessSettings, setBusinessSettings] = useState<BusinessSettings>({
     name: 'GenZ Laundry',
-    address: '123 Laundry Street, Delhi - 110001',
-    phone: '+91 98765 43210'
+    address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+    phone: '+91 9356930727'
   });
   
   const [currentOrder, setCurrentOrder] = useState<{

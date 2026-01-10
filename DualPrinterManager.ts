@@ -310,11 +310,11 @@ export class DualPrinterManager {
   generateSampleOrder(): LaundryOrder {
     return {
       businessName: 'GenZ Laundry',
-      address: '123 Laundry Street, Delhi - 110001',
-      phone: '+91 98765 43210',
+      address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+      phone: '+91 9256930727',
       billNumber: `GenZ-${Date.now().toString().slice(-6)}`,
       customerName: 'Sample Customer',
-      customerPhone: '+91 98765 43210',
+      customerPhone: '+91 9256930727',
       items: [
         {
           id: 'shirt-001',

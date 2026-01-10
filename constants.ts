@@ -73,8 +73,8 @@ export const WASH_TYPES = {
 // Business configuration defaults
 export const DEFAULT_SHOP_CONFIG = {
   shopName: 'GenZ Laundry',
-  address: '123 Laundry Street, Delhi - 110001',
-  contact: '+91 98765 43210',
+  address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+  contact: '+91 9256930727',
   gstNumber: ''
 };
 

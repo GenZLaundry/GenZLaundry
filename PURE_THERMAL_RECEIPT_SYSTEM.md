@@ -77,8 +77,8 @@ Thank You Message
 // Convert your cart data to thermal format
 const billData: BillData = {
   businessName: "GenZLaundry",
-  address: "123 Laundry Street, Delhi",
-  phone: "+91 98765 43210",
+  address: "Sabji Mandi Circle, Ratanada Jodhpur-342022",
+  phone: "+91 9256930727",
   billNumber: "GenZ-024",
   customerName: "Customer Name",
   items: cart.map(item => ({

@@ -23,12 +23,13 @@ Laundry tags are now printed separately on the TSC label printer, NOT included o
 ```
 ┌─────────────────────────────────────┐
 │           GENZLAUNDRY               │
-│    123 Laundry Street, Delhi        │
+│        Sabji Mandi Circle           |
+|       Ratanada Jodhpur-342022       │
 │        Ph: +91 98765 43210          │
 │═════════════════════════════════════│
 │ CUST: Customer Name                 │
 │ ORDER: GenZ-024                     │
-│ DATE: 10 Jan 2026, 1:38 pm         │
+│ DATE: 10 Jan 2026, 1:38 pm          │
 │═════════════════════════════════════│
 │ ITEM                QTY    PRICE    │
 │─────────────────────────────────────│

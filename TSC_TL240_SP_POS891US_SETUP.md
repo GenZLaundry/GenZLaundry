@@ -113,8 +113,9 @@ Customer Order → Bill Printing → Tag Printing → Item Tracking
 ```
 ================================
          GENZ LAUNDRY
-    123 Laundry Street, Delhi
-       Ph: +91 98765 43210
+    Sabji Mandi Circle, Ratanada 
+         Jodhpur-342022
+       Ph: +91 9256930727
 ================================
 CUST: Rajesh Kumar
 ORDER: GenZ-240110-1234
