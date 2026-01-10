@@ -83,38 +83,192 @@ export const HybridPrintingSolution: React.FC = () => {
 
   // Method 2: Use Windows Print API (works with installed printers)
   const printViaWindows = () => {
+    const currentDate = new Date();
+    const billNumber = `GenZ-${currentDate.getFullYear().toString().slice(-2)}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+    const dateStr = currentDate.toLocaleDateString('en-IN', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+    const timeStr = currentDate.toLocaleTimeString('en-IN', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
+    const subtotal = calculateTotal();
+    const gst = Math.round(subtotal * 0.18); // 18% GST
+    const discount = Math.round(subtotal * 0.05); // 5% discount
+    const finalTotal = subtotal + gst - discount;
+
     const printContent = `
-      <div style="width: 80mm; font-family: monospace; font-size: 12px;">
-        <div style="text-align: center; font-weight: bold;">
-          GENZ LAUNDRY
-        </div>
-        <div style="text-align: center; border-bottom: 1px solid black; padding-bottom: 5px;">
-          123 Laundry Street, Delhi
-        </div>
-        <br>
-        <div><strong>Customer:</strong> ${orderData.customerName}</div>
-        <div><strong>Date:</strong> ${new Date().toLocaleDateString()}</div>
-        <div style="border-bottom: 1px solid black; margin: 10px 0;"></div>
+      <div style="width: 80mm; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.2; margin: 0; padding: 8px;">
         
-        ${orderData.items.map(item => `
+        <!-- Header with Logo Area -->
+        <div style="text-align: center; margin-bottom: 8px;">
+          <div style="font-size: 18px; font-weight: bold; letter-spacing: 2px; margin-bottom: 2px;">
+            ✨ GENZ LAUNDRY ✨
+          </div>
+          <div style="font-size: 9px; color: #666; margin-bottom: 1px;">
+            Premium Laundry & Dry Cleaning Services
+          </div>
+          <div style="font-size: 9px; color: #666; margin-bottom: 1px;">
+            📍 123 Laundry Street, Delhi - 110001
+          </div>
+          <div style="font-size: 9px; color: #666; margin-bottom: 1px;">
+            📞 +91 98765 43210 | 🌐 genzlaundry.com
+          </div>
+          <div style="font-size: 8px; color: #666;">
+            GST No: 07AABCU9603R1ZX | FSSAI: 12345678901234
+          </div>
+        </div>
+
+        <!-- Decorative Border -->
+        <div style="text-align: center; font-size: 8px; margin: 4px 0;">
+          ═══════════════════════════════════════════
+        </div>
+
+        <!-- Bill Details -->
+        <div style="margin: 6px 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span style="font-weight: bold;">📋 BILL NO:</span>
+            <span style="font-weight: bold;">${billNumber}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>👤 CUSTOMER:</span>
+            <span style="text-transform: uppercase; font-weight: bold;">${orderData.customerName}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>📅 DATE:</span>
+            <span>${dateStr}</span>
+          </div>
           <div style="display: flex; justify-content: space-between;">
-            <span>${item.name} x${item.quantity}</span>
-            <span>₹${item.price * item.quantity}</span>
+            <span>🕐 TIME:</span>
+            <span>${timeStr}</span>
           </div>
-          <div style="font-size: 10px; color: #666;">${item.washType}</div>
+        </div>
+
+        <!-- Items Header -->
+        <div style="text-align: center; font-size: 8px; margin: 6px 0;">
+          ═══════════════════════════════════════════
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 9px; margin-bottom: 3px; border-bottom: 1px dashed #333; padding-bottom: 2px;">
+          <span style="width: 50%;">ITEM DESCRIPTION</span>
+          <span style="width: 15%; text-align: center;">QTY</span>
+          <span style="width: 20%; text-align: right;">RATE</span>
+          <span style="width: 15%; text-align: right;">AMOUNT</span>
+        </div>
+
+        <!-- Items List -->
+        ${orderData.items.map((item, index) => `
+          <div style="margin-bottom: 4px; font-size: 9px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="width: 50%; font-weight: bold;">${item.name}</span>
+              <span style="width: 15%; text-align: center;">${item.quantity}</span>
+              <span style="width: 20%; text-align: right;">₹${item.price}</span>
+              <span style="width: 15%; text-align: right; font-weight: bold;">₹${item.price * item.quantity}</span>
+            </div>
+            <div style="font-size: 8px; color: #666; margin-left: 2px; font-style: italic;">
+              🧽 Service: ${item.washType} | Item #${index + 1}
+            </div>
+          </div>
         `).join('')}
-        
-        <div style="border-top: 1px solid black; margin: 10px 0; padding-top: 5px;">
-          <div style="display: flex; justify-content: space-between; font-weight: bold;">
-            <span>TOTAL:</span>
-            <span>₹${calculateTotal()}</span>
+
+        <!-- Totals Section -->
+        <div style="border-top: 1px dashed #333; margin: 8px 0 6px 0; padding-top: 4px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 10px;">
+            <span>Subtotal (${orderData.items.length} items):</span>
+            <span>₹${subtotal}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 9px; color: #666;">
+            <span>GST @ 18%:</span>
+            <span>₹${gst}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 9px; color: #e74c3c;">
+            <span>Discount (5%):</span>
+            <span>-₹${discount}</span>
+          </div>
+          <div style="border-top: 2px solid #333; padding-top: 4px;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+              <span>💰 TOTAL PAYABLE:</span>
+              <span style="background: #333; color: white; padding: 2px 6px; border-radius: 3px;">₹${finalTotal}</span>
+            </div>
           </div>
         </div>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 10px;">
-          Your clothes, cared for with Gen-Z speed.<br>
-          THANK YOU!
+
+        <!-- Payment & Service Info -->
+        <div style="text-align: center; font-size: 8px; margin: 6px 0; color: #666;">
+          ═══════════════════════════════════════════
         </div>
+        
+        <div style="font-size: 9px; margin: 4px 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>💳 Payment Mode:</span>
+            <span style="font-weight: bold;">CASH</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <span>📦 Ready for Pickup:</span>
+            <span style="font-weight: bold; color: #27ae60;">${new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN')}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>⏰ Pickup Time:</span>
+            <span style="font-weight: bold;">10:00 AM - 8:00 PM</span>
+          </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div style="text-align: center; font-size: 8px; margin: 6px 0; color: #666;">
+          ═══════════════════════════════════════════
+        </div>
+        
+        <div style="font-size: 7px; color: #666; text-align: center; margin: 4px 0; line-height: 1.3;">
+          <div style="margin-bottom: 2px;">📋 <strong>TERMS & CONDITIONS:</strong></div>
+          <div>• Items not collected within 30 days will be donated</div>
+          <div>• We are not responsible for items left in pockets</div>
+          <div>• Dry clean only items processed as per fabric requirements</div>
+          <div>• Color bleeding/shrinkage not guaranteed for old garments</div>
+        </div>
+
+        <!-- Footer Message -->
+        <div style="text-align: center; font-size: 8px; margin: 6px 0; color: #666;">
+          ═══════════════════════════════════════════
+        </div>
+        
+        <div style="text-align: center; margin: 6px 0;">
+          <div style="font-size: 11px; font-weight: bold; color: #2c3e50; margin-bottom: 2px;">
+            ✨ Your clothes, cared for with Gen-Z speed! ✨
+          </div>
+          <div style="font-size: 8px; color: #666; margin-bottom: 2px;">
+            🌟 Rate us on Google | 📱 Follow @genzlaundry
+          </div>
+          <div style="font-size: 8px; color: #666;">
+            💚 Eco-friendly processes | 🚚 Free home pickup/delivery
+          </div>
+        </div>
+
+        <!-- QR Code Area -->
+        <div style="text-align: center; margin: 6px 0;">
+          <div style="border: 2px dashed #666; padding: 8px; display: inline-block;">
+            <div style="font-size: 8px; margin-bottom: 2px;">📱 SCAN FOR TRACKING</div>
+            <div style="font-family: monospace; font-size: 6px; letter-spacing: 1px;">
+              ████ ██ ████ ██ ████<br>
+              ██ ████ ██ ████ ██ ██<br>
+              ████ ██ ████ ██ ████<br>
+            </div>
+            <div style="font-size: 7px; margin-top: 2px;">Bill: ${billNumber}</div>
+          </div>
+        </div>
+
+        <!-- Final Thank You -->
+        <div style="text-align: center; font-size: 10px; font-weight: bold; margin: 6px 0; color: #2c3e50;">
+          🙏 THANK YOU FOR CHOOSING GENZ LAUNDRY! 🙏
+        </div>
+        
+        <div style="text-align: center; font-size: 6px; color: #999; margin-top: 4px;">
+          Printed on: ${new Date().toLocaleString('en-IN')} | POS Terminal: Web-001
+        </div>
+
       </div>
     `;
 
@@ -123,11 +277,27 @@ export const HybridPrintingSolution: React.FC = () => {
       printWindow.document.write(`
         <html>
           <head>
-            <title>Laundry Receipt</title>
+            <title>GenZ Laundry - Professional Receipt</title>
             <style>
               @media print {
-                body { margin: 0; }
-                @page { size: 80mm auto; margin: 0; }
+                body { 
+                  margin: 0; 
+                  padding: 0;
+                  font-family: 'Courier New', monospace;
+                }
+                @page { 
+                  size: 80mm auto; 
+                  margin: 0; 
+                }
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  color-adjust: exact !important;
+                }
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                background: white;
               }
             </style>
           </head>
@@ -135,8 +305,12 @@ export const HybridPrintingSolution: React.FC = () => {
             ${printContent}
             <script>
               window.onload = function() {
-                window.print();
-                window.close();
+                setTimeout(function() {
+                  window.print();
+                  setTimeout(function() {
+                    window.close();
+                  }, 1000);
+                }, 500);
               }
             </script>
           </body>
