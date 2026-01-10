@@ -1,11 +1,11 @@
 import React from 'react';
-import ConnectionHelper from './ConnectionHelper';
+import HybridPrintingSolution from './HybridPrintingSolution';
 import './App.css';
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <ConnectionHelper />
+      <HybridPrintingSolution />
     </div>
   );
 };
