@@ -182,12 +182,54 @@ const App: React.FC = () => {
     localStorage.setItem(STORAGE_KEYS.SAVED_ITEMS, JSON.stringify(newItems));
   };
 
-  // Connect all printers
+  // Check printer connection status periodically
+  useEffect(() => {
+    const checkConnectionStatus = () => {
+      const thermalStatus = isUSBPrinterConnected();
+      const tscStatus = isTSCConnected();
+      
+      setUsbConnected(thermalStatus);
+      setTscConnected(tscStatus);
+    };
+
+    // Check status every 2 seconds
+    const interval = setInterval(checkConnectionStatus, 2000);
+    
+    // Initial check
+    checkConnectionStatus();
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Connect all printers with enhanced debugging
   const handleConnectAllPrinters = async () => {
     try {
+      console.log('🔌 Starting printer connection process...');
+      
+      // Show loading state
+      alert('🔌 Connecting to printers...\n\nPlease wait while we establish connections.');
+      
       const results = await dualPrinterManager.connectAllPrinters();
+      
+      console.log('📊 Connection results:', results);
+      
+      // Force status update
       setUsbConnected(results.thermal);
       setTscConnected(results.tsc);
+      
+      // Double-check actual connection status
+      setTimeout(() => {
+        const actualThermalStatus = isUSBPrinterConnected();
+        const actualTscStatus = isTSCConnected();
+        
+        console.log('🔍 Actual status check:', { 
+          thermal: actualThermalStatus, 
+          tsc: actualTscStatus 
+        });
+        
+        setUsbConnected(actualThermalStatus);
+        setTscConnected(actualTscStatus);
+      }, 1000);
       
       let message = '🖨️ PRINTER CONNECTION RESULTS:\n\n';
       message += `Thermal Printer (SP-POS893UED): ${results.thermal ? '✅ CONNECTED' : '❌ FAILED'}\n`;
@@ -197,13 +239,56 @@ const App: React.FC = () => {
         message += '🎉 Both printers ready for professional laundry POS operation!';
       } else if (results.thermal || results.tsc) {
         message += '⚠️ Partial connection - some features may be limited.';
+        message += '\n\n💡 TIP: Try connecting one printer at a time if issues persist.';
       } else {
         message += '❌ No printers connected. Check USB connections and try again.';
+        message += '\n\n🔧 TROUBLESHOOTING:\n';
+        message += '• Ensure printers are powered on\n';
+        message += '• Check USB cable connections\n';
+        message += '• Use Chrome/Edge browser\n';
+        message += '• Allow serial port permissions\n';
+        message += '• Try connecting one printer at a time';
       }
       
       alert(message);
     } catch (error) {
-      alert('❌ Connection Error:\n\n' + (error as Error).message);
+      console.error('❌ Connection error:', error);
+      alert('❌ Connection Error:\n\n' + (error as Error).message + '\n\n🔧 Try:\n• Refresh the page\n• Check browser permissions\n• Ensure HTTPS/localhost');
+    }
+  };
+
+  // Connect individual printers for debugging
+  const handleConnectThermalOnly = async () => {
+    try {
+      console.log('🔌 Connecting thermal printer only...');
+      const success = await connectUSBPrinter();
+      setUsbConnected(success);
+      
+      if (success) {
+        alert('✅ Thermal Printer Connected!\n\nSP-POS893UED is ready for receipt printing.');
+      } else {
+        alert('❌ Thermal Printer Connection Failed!\n\n🔧 Check:\n• Printer is powered on\n• USB cable connected\n• Browser permissions allowed');
+      }
+    } catch (error) {
+      console.error('❌ Thermal connection error:', error);
+      alert('❌ Thermal Connection Error:\n\n' + (error as Error).message);
+    }
+  };
+
+  const handleConnectTSCOnly = async () => {
+    try {
+      console.log('🔌 Connecting TSC printer only...');
+      const success = await connectTSCPrinter();
+      setTscConnected(success);
+      
+      if (success) {
+        alert('✅ TSC Label Printer Connected!\n\nTSC TL240 is ready for tag printing.');
+      } else {
+        alert('❌ TSC Printer Connection Failed!\n\n🔧 Check:\n• Printer is powered on\n• USB cable connected\n• Label paper loaded');
+      }
+    } catch (error) {
+      console.error('❌ TSC connection error:', error);
+      alert('❌ TSC Connection Error:\n\n' + (error as Error).message);
     }
   };
 
@@ -267,7 +352,7 @@ const App: React.FC = () => {
               usbConnected 
                 ? 'bg-green-900 border-green-500 text-green-300' 
                 : 'bg-red-900 border-red-500 text-red-300'
-            }`}>
+            }`} title={`Thermal Printer: ${usbConnected ? 'Connected and Ready' : 'Disconnected - Click to connect'}`}>
               <i className={`fas ${usbConnected ? 'fa-receipt' : 'fa-times'} mr-1`}></i>
               THERMAL
             </div>
@@ -277,20 +362,42 @@ const App: React.FC = () => {
               tscConnected 
                 ? 'bg-green-900 border-green-500 text-green-300' 
                 : 'bg-red-900 border-red-500 text-red-300'
-            }`}>
+            }`} title={`TSC Label Printer: ${tscConnected ? 'Connected and Ready' : 'Disconnected - Click to connect'}`}>
               <i className={`fas ${tscConnected ? 'fa-tags' : 'fa-times'} mr-1`}></i>
               LABELS
             </div>
           </div>
           
           {(!usbConnected || !tscConnected) && (
-            <button 
-              onClick={handleConnectAllPrinters}
-              className="bg-orange-600 hover:bg-orange-500 px-3 py-1 rounded-md text-xs font-bold transition-colors"
-              title="Connect All Printers"
-            >
-              <i className="fas fa-plug mr-1"></i> CONNECT PRINTERS
-            </button>
+            <div className="flex gap-1">
+              <button 
+                onClick={handleConnectAllPrinters}
+                className="bg-orange-600 hover:bg-orange-500 px-2 py-1 rounded-md text-xs font-bold transition-colors"
+                title="Connect All Printers"
+              >
+                <i className="fas fa-plug mr-1"></i> ALL
+              </button>
+              
+              {!usbConnected && (
+                <button 
+                  onClick={handleConnectThermalOnly}
+                  className="bg-green-600 hover:bg-green-500 px-2 py-1 rounded-md text-xs font-bold transition-colors"
+                  title="Connect Thermal Printer Only"
+                >
+                  <i className="fas fa-receipt mr-1"></i> THERMAL
+                </button>
+              )}
+              
+              {!tscConnected && (
+                <button 
+                  onClick={handleConnectTSCOnly}
+                  className="bg-blue-600 hover:bg-blue-500 px-2 py-1 rounded-md text-xs font-bold transition-colors"
+                  title="Connect TSC Label Printer Only"
+                >
+                  <i className="fas fa-tags mr-1"></i> TSC
+                </button>
+              )}
+            </div>
           )}
           
           <button 
@@ -306,6 +413,39 @@ const App: React.FC = () => {
             title="Admin Panel - Manage Items"
           >
             <i className="fas fa-user-shield"></i>
+          </button>
+          
+          <button 
+            onClick={() => {
+              const thermalStatus = isUSBPrinterConnected();
+              const tscStatus = isTSCConnected();
+              
+              let debugInfo = '🔍 PRINTER DEBUG INFO:\n\n';
+              debugInfo += `Current Status:\n`;
+              debugInfo += `• Thermal: ${thermalStatus ? '✅ Connected' : '❌ Disconnected'}\n`;
+              debugInfo += `• TSC: ${tscStatus ? '✅ Connected' : '❌ Disconnected'}\n\n`;
+              
+              debugInfo += `State Variables:\n`;
+              debugInfo += `• usbConnected: ${usbConnected}\n`;
+              debugInfo += `• tscConnected: ${tscConnected}\n\n`;
+              
+              debugInfo += `Browser Support:\n`;
+              debugInfo += `• Web Serial API: ${('serial' in navigator) ? '✅ Supported' : '❌ Not Supported'}\n`;
+              debugInfo += `• User Agent: ${navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Edge') ? 'Edge' : 'Other'}\n`;
+              debugInfo += `• Protocol: ${window.location.protocol}\n\n`;
+              
+              debugInfo += `💡 If status shows disconnected after connecting:\n`;
+              debugInfo += `• Try refreshing the page\n`;
+              debugInfo += `• Check browser console for errors\n`;
+              debugInfo += `• Ensure printer drivers are installed\n`;
+              debugInfo += `• Try connecting one printer at a time`;
+              
+              alert(debugInfo);
+            }}
+            className="hover:bg-yellow-600 p-2 rounded-full transition-colors"
+            title="Debug Printer Connections"
+          >
+            <i className="fas fa-bug"></i>
           </button>
         </div>
       </header>

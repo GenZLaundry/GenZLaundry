@@ -55,12 +55,17 @@ export class DirectUSBThermalPrinter {
   // Connect to USB thermal printer
   async connectUSB(): Promise<boolean> {
     try {
+      console.log('🔌 Starting USB thermal printer connection...');
+      
       // Check if Web Serial API is supported
       if (!('serial' in navigator)) {
         throw new Error('Web Serial API not supported. Use Chrome/Edge with HTTPS.');
       }
 
+      console.log('✅ Web Serial API supported');
+
       // Request serial port access
+      console.log('📋 Requesting serial port access...');
       this.port = await (navigator as any).serial.requestPort({
         filters: [
           { usbVendorId: 0x0416 }, // SP-POS893UED
@@ -69,7 +74,10 @@ export class DirectUSBThermalPrinter {
         ]
       });
 
+      console.log('✅ Serial port selected:', this.port);
+
       // Open the port
+      console.log('🔓 Opening serial port...');
       await this.port.open({ 
         baudRate: this.config.baudRate || 9600,
         dataBits: 8,
@@ -78,19 +86,50 @@ export class DirectUSBThermalPrinter {
         flowControl: 'none'
       });
 
+      console.log('✅ Serial port opened successfully');
+
       // Get writer for sending data
       this.writer = this.port.writable?.getWriter() || null;
+      
+      if (!this.writer) {
+        throw new Error('Failed to get port writer');
+      }
+      
+      console.log('✅ Port writer obtained');
+      
+      // Set connection status BEFORE initializing
       this.isConnected = true;
 
       // Initialize printer
+      console.log('🔧 Initializing thermal printer...');
       await this.initializePrinter();
 
-      console.log('✅ USB Thermal Printer Connected');
+      console.log('✅ USB Thermal Printer Connected Successfully');
       return true;
 
     } catch (error) {
       console.error('❌ USB Printer Connection Failed:', error);
       this.isConnected = false;
+      
+      // Clean up on failure
+      if (this.writer) {
+        try {
+          await this.writer.close();
+        } catch (e) {
+          console.error('Error closing writer:', e);
+        }
+        this.writer = null;
+      }
+      
+      if (this.port) {
+        try {
+          await this.port.close();
+        } catch (e) {
+          console.error('Error closing port:', e);
+        }
+        this.port = null;
+      }
+      
       return false;
     }
   }
@@ -276,7 +315,24 @@ export class DirectUSBThermalPrinter {
 
   // Check connection status
   isUSBConnected(): boolean {
-    return this.isConnected;
+    const connected = this.isConnected && this.port && this.writer;
+    console.log('🔍 USB Connection Status Check:', {
+      isConnected: this.isConnected,
+      hasPort: !!this.port,
+      hasWriter: !!this.writer,
+      finalStatus: connected
+    });
+    return !!connected;
+  }
+
+  // Get detailed connection info
+  getConnectionInfo(): { connected: boolean; port: boolean; writer: boolean; details: string } {
+    return {
+      connected: this.isConnected,
+      port: !!this.port,
+      writer: !!this.writer,
+      details: `Port: ${this.port ? 'Available' : 'None'}, Writer: ${this.writer ? 'Available' : 'None'}, Status: ${this.isConnected ? 'Connected' : 'Disconnected'}`
+    };
   }
 
   // Get available serial ports
