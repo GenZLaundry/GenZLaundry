@@ -28,7 +28,11 @@ interface LaundryTag {
   date: string;
 }
 
-const EnhancedPOSInterface: React.FC = () => {
+interface EnhancedPOSInterfaceProps {
+  onLogout?: () => void;
+}
+
+const EnhancedPOSInterface: React.FC<EnhancedPOSInterfaceProps> = ({ onLogout }) => {
   const [customer, setCustomer] = useState<Customer>({ name: '', phone: '' });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [currentTab, setCurrentTab] = useState<'pos' | 'items' | 'reports' | 'settings'>('pos');
@@ -597,6 +601,35 @@ const EnhancedPOSInterface: React.FC = () => {
             }}>
               📅 {new Date().toLocaleDateString('en-IN')}
             </div>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                style={{
+                  padding: '12px 20px',
+                  background: 'rgba(220, 53, 69, 0.9)',
+                  color: 'white',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  borderRadius: '25px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#dc3545';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(220, 53, 69, 0.9)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                🔓 Logout
+              </button>
+            )}
           </div>
         </div>
 

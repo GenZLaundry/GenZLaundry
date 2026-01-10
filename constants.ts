@@ -14,6 +14,7 @@ export const STORAGE_KEYS = {
 // Default laundry items with competitive pricing
 export const DEFAULT_ITEMS: LaundryItem[] = [
   // Shirts
+  { id: 'shirt-cotton', name: 'Shirt', price: 50, category: 'Shirts' },
   { id: 'shirt-cotton', name: 'Shirt (Cotton)', price: 50, category: 'Shirts' },
   { id: 'shirt-formal', name: 'Shirt (Formal)', price: 60, category: 'Shirts' },
   { id: 'tshirt', name: 'T-Shirt', price: 40, category: 'Shirts' },
