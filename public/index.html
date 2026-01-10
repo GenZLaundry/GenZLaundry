@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenZ Laundry Billing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="thermal-print.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="login-container">
+                <div class="login-box">
+                    <h1><i class="fas fa-tshirt"></i> GenZ Laundry</h1>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <div class="login-info">
+                        <small>Default: admin@genzlaundry.com / admin123</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" class="screen">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1><i class="fas fa-tshirt"></i> GenZ Laundry</h1>
+                </div>
+                <div class="header-right">
+                    <button id="logoutBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="nav">
+                <button class="nav-btn active" data-screen="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-screen="invoices">
+                    <i class="fas fa-file-invoice"></i> Invoices
+                </button>
+                <button class="nav-btn" data-screen="customers">
+                    <i class="fas fa-users"></i> Customers
+                </button>
+                <button class="nav-btn" data-screen="services">
+                    <i class="fas fa-cogs"></i> Services
+                </button>
+                <button class="nav-btn" data-screen="reports">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </button>
+                <button class="nav-btn" data-screen="settings">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="content">
+                <!-- Dashboard -->
+                <div id="dashboardScreen" class="content-screen active">
+                    <div class="dashboard-header">
+                        <h2>Dashboard</h2>
+                        <button id="createInvoiceBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create Invoice
+                        </button>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="todayInvoices">0</h3>
+                                <p>Today's Invoices</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="todayRevenue">₹0</h3>
+                                <p>Today's Revenue</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="monthlyRevenue">₹0</h3>
+                                <p>Monthly Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices -->
+                <div id="invoicesScreen" class="content-screen">
+                    <div class="screen-header">
+                        <h2>Invoices</h2>
+                        <button id="newInvoiceBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> New Invoice
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="invoicesTable">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Customers -->
+                <div id="customersScreen" class="content-screen">
+                    <div class="screen-header">
+                        <h2>Customers</h2>
+                        <button id="addCustomerBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Customer
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="customersTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>GST Number</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div id="servicesScreen" class="content-screen">
+                    <div class="screen-header">
+                        <h2>Services</h2>
+                        <button id="addServiceBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Service
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="servicesTable">
+                            <thead>
+                                <tr>
+                                    <th>Service Name</th>
+                                    <th>Rate</th>
+                                    <th>Unit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div id="reportsScreen" class="content-screen">
+                    <div class="screen-header">
+                        <h2>Reports</h2>
+                    </div>
+                    
+                    <div class="reports-container">
+                        <div class="report-section">
+                            <h3>Daily Report</h3>
+                            <div class="form-group">
+                                <input type="date" id="dailyReportDate" value="">
+                                <button id="generateDailyReport" class="btn btn-primary">Generate</button>
+                            </div>
+                            <div id="dailyReportResult"></div>
+                        </div>
+                        
+                        <div class="report-section">
+                            <h3>Monthly Report</h3>
+                            <div class="form-group">
+                                <select id="monthSelect">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <select id="yearSelect"></select>
+                                <button id="generateMonthlyReport" class="btn btn-primary">Generate</button>
+                            </div>
+                            <div id="monthlyReportResult"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div id="settingsScreen" class="content-screen">
+                    <div class="screen-header">
+                        <h2>Settings</h2>
+                    </div>
+                    
+                    <div class="settings-container">
+                        <form id="settingsForm">
+                            <div class="form-group">
+                                <label>Business Name</label>
+                                <input type="text" id="businessName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="businessAddress" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" id="businessPhone">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>GSTIN</label>
+                                <input type="text" id="gstin">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="gstEnabled"> Enable GST
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Terms & Conditions</label>
+                                <textarea id="terms" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Logo</label>
+                                <input type="file" id="logoUpload" accept="image/*">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="customerModalTitle">Add Customer</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" id="customerPhone">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="customerAddress" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>GST Number</label>
+                    <input type="text" id="customerGst">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="serviceModalTitle">Add Service</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="serviceForm">
+                <div class="form-group">
+                    <label>Service Name *</label>
+                    <input type="text" id="serviceName" required>
+                </div>
+                <div class="form-group">
+                    <label>Rate *</label>
+                    <input type="number" id="serviceRate" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Unit</label>
+                    <select id="serviceUnit">
+                        <option value="kg">kg</option>
+                        <option value="piece">piece</option>
+                        <option value="item">item</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="invoiceModal" class="modal large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Invoice</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="invoiceForm">
+                <div class="invoice-form-grid">
+                    <div class="form-section">
+                        <h4>Customer Information</h4>
+                        <div class="customer-selection">
+                            <div class="form-group">
+                                <label>Select Customer</label>
+                                <div class="input-with-button">
+                                    <select id="invoiceCustomer">
+                                        <option value="">Select Customer or Walk-in</option>
+                                        <option value="new">+ Add New Customer</option>
+                                    </select>
+                                    <button type="button" id="quickAddCustomer" class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Add Customer Form (Hidden by default) -->
+                            <div id="quickCustomerForm" class="quick-form hidden">
+                                <div class="quick-form-grid">
+                                    <div class="form-group">
+                                        <input type="text" id="quickCustomerName" placeholder="Customer Name *" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="quickCustomerPhone" placeholder="Phone">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="quickCustomerAddress" placeholder="Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="quickCustomerGst" placeholder="GST Number">
+                                    </div>
+                                </div>
+                                <div class="quick-form-actions">
+                                    <button type="button" id="saveQuickCustomer" class="btn btn-sm btn-primary">Save Customer</button>
+                                    <button type="button" id="cancelQuickCustomer" class="btn btn-sm btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>Services</h4>
+                        <div id="invoiceItems">
+                            <div class="invoice-item">
+                                <div class="service-input-group">
+                                    <select class="service-select">
+                                        <option value="">Select Service</option>
+                                        <option value="custom">+ Custom Service</option>
+                                    </select>
+                                    <input type="text" class="custom-service-name hidden" placeholder="Service Name">
+                                    <select class="custom-service-unit hidden">
+                                        <option value="kg">kg</option>
+                                        <option value="piece">piece</option>
+                                        <option value="item">item</option>
+                                    </select>
+                                </div>
+                                <input type="number" class="quantity-input" placeholder="Qty" step="0.01" required>
+                                <input type="number" class="rate-input" placeholder="Rate" step="0.01" required>
+                                <span class="amount-display">₹0.00</span>
+                                <button type="button" class="btn btn-danger btn-sm remove-item">×</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addInvoiceItem" class="btn btn-secondary">Add Item</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>Totals</h4>
+                        <div class="totals-grid">
+                            <div class="form-group">
+                                <label>Subtotal</label>
+                                <input type="text" id="subtotalDisplay" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Discount</label>
+                                <div class="discount-group">
+                                    <input type="number" id="discountAmount" step="0.01" value="0">
+                                    <select id="discountType">
+                                        <option value="amount">₹</option>
+                                        <option value="percentage">%</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>GST (18%)</label>
+                                <input type="text" id="gstDisplay" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>Total</strong></label>
+                                <input type="text" id="totalDisplay" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save & Print</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Thermal Print Area (Hidden) -->
+    <div id="thermalPrint" class="thermal-print">
+        <!-- Invoice content will be inserted here -->
+    </div>
+
+    <!-- Invoice View Modal -->
+    <div id="invoiceViewModal" class="modal large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Invoice Details</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="invoice-view-content">
+                <div class="invoice-header-info">
+                    <div class="invoice-info-grid">
+                        <div class="info-section">
+                            <h4>Invoice Information</h4>
+                            <p><strong>Invoice #:</strong> <span id="viewInvoiceNumber"></span></p>
+                            <p><strong>Date:</strong> <span id="viewInvoiceDate"></span></p>
+                            <p><strong>Time:</strong> <span id="viewInvoiceTime"></span></p>
+                        </div>
+                        <div class="info-section">
+                            <h4>Customer Information</h4>
+                            <p><strong>Name:</strong> <span id="viewCustomerName"></span></p>
+                            <p><strong>Phone:</strong> <span id="viewCustomerPhone"></span></p>
+                            <p><strong>Address:</strong> <span id="viewCustomerAddress"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="invoice-items-section">
+                    <h4>Services</h4>
+                    <table class="invoice-items-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="viewInvoiceItems">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="invoice-totals-section">
+                    <div class="totals-display">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="viewSubtotal"></span>
+                        </div>
+                        <div class="total-row" id="viewDiscountRow" style="display: none;">
+                            <span>Discount:</span>
+                            <span id="viewDiscount"></span>
+                        </div>
+                        <div class="total-row" id="viewGstRow" style="display: none;">
+                            <span>GST (18%):</span>
+                            <span id="viewGst"></span>
+                        </div>
+                        <div class="total-row final-total">
+                            <span><strong>Total:</strong></span>
+                            <span id="viewTotal"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceViewModal')">Close</button>
+                <button type="button" id="printFromView" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="thermal-printer.js"></script>
+    <script src="zero-waste-printer.js"></script>
+    <script src="direct-thermal-printer.js"></script>
+    <script src="serial-thermal-printer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

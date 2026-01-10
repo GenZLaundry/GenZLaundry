@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermal Print Test - GenZ Laundry</title>
+    <link rel="stylesheet" href="public/thermal-print.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #5a6fd8; }
+        .preview-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>🖨️ Thermal Print Test</h1>
+        <p>This page tests the thermal receipt printing functionality.</p>
+        
+        <button class="btn" onclick="showPreview()">Show Receipt Preview</button>
+        <button class="btn" onclick="testPrint()">Test Print Receipt</button>
+        <button class="btn" onclick="hidePreview()">Hide Preview</button>
+    </div>
+
+    <div class="preview-area">
+        <h3>Receipt Preview (80mm width):</h3>
+        <div id="thermalPrint" class="thermal-print" style="display: none;">
+            <!-- Receipt content will be inserted here -->
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>📋 Print Test Instructions</h2>
+        <ol>
+            <li><strong>Show Preview:</strong> Click "Show Receipt Preview" to see how the receipt will look</li>
+            <li><strong>Check Layout:</strong> Verify the receipt fits in 80mm width and has proper spacing</li>
+            <li><strong>Test Print:</strong> Click "Test Print Receipt" to send to printer</li>
+            <li><strong>Verify Output:</strong> Check that the printed receipt:
+                <ul>
+                    <li>Uses only the space needed (no extra A4 height)</li>
+                    <li>Fits properly on 80mm thermal paper</li>
+                    <li>Has clear, readable text</li>
+                    <li>Shows all information correctly</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="test-card">
+        <h2>🔧 Printer Settings</h2>
+        <p><strong>For best results, ensure your thermal printer is configured with:</strong></p>
+        <ul>
+            <li>Paper size: 80mm (width) × Auto (height)</li>
+            <li>Margins: 0mm on all sides</li>
+            <li>Auto-cut enabled (if supported)</li>
+            <li>Print quality: Normal or Draft</li>
+        </ul>
+    </div>
+
+    <script>
+        // Test receipt data
+        const testInvoice = {
+            invoice_number: 'TEST001',
+            created_at: new Date().toISOString(),
+            customer_name: 'Test Customer',
+            customer_phone: '9876543210',
+            subtotal: 150,
+            discount: 10,
+            gst_amount: 25.2,
+            total: 165.2,
+            items: [
+                {
+                    service_name: 'Washing',
+                    quantity: 2,
+                    unit: 'kg',
+                    rate: 50,
+                    amount: 100
+                },
+                {
+                    service_name: 'Dry Cleaning',
+                    quantity: 1,
+                    unit: 'piece',
+                    rate: 50,
+                    amount: 50
+                }
+            ]
+        };
+
+        const testSettings = {
+            business_name: 'GenZ Laundry',
+            address: '123 Test Street, Test City',
+            phone: '9876543210',
+            gstin: 'TEST123456789',
+            terms: 'Thank you for choosing GenZ Laundry!'
+        };
+
+        function showPreview() {
+            generateTestReceipt();
+            document.getElementById('thermalPrint').style.display = 'block';
+            document.getElementById('thermalPrint').classList.add('preview');
+        }
+
+        function hidePreview() {
+            document.getElementById('thermalPrint').style.display = 'none';
+            document.getElementById('thermalPrint').classList.remove('preview');
+        }
+
+        function testPrint() {
+            generateTestReceipt();
+            
+            // Inject thermal print styles
+            const thermalStyle = document.createElement('style');
+            thermalStyle.id = 'thermal-print-style';
+            thermalStyle.textContent = `
+                @media print {
+                    @page {
+                        size: 80mm auto !important;
+                        margin: 0 !important;
+                    }
+                    
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        width: 80mm !important;
+                        height: auto !important;
+                    }
+                    
+                    body * {
+                        visibility: hidden !important;
+                    }
+                    
+                    .thermal-print,
+                    .thermal-print * {
+                        visibility: visible !important;
+                    }
+                    
+                    .thermal-print {
+                        position: absolute !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 80mm !important;
+                        height: auto !important;
+                        margin: 0 !important;
+                        padding: 2mm !important;
+                        font-family: 'Courier New', monospace !important;
+                        font-size: 10px !important;
+                        line-height: 1.1 !important;
+                        color: black !important;
+                        background: white !important;
+                    }
+                }
+            `;
+            
+            document.head.appendChild(thermalStyle);
+            
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    thermalStyle.remove();
+                }, 1000);
+            }, 100);
+        }
+
+        function generateTestReceipt() {
+            const printArea = document.getElementById('thermalPrint');
+            const date = new Date().toLocaleDateString('en-IN');
+            const time = new Date().toLocaleTimeString('en-IN', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            let receiptHTML = `
+                <div class="business-name">${testSettings.business_name}</div>
+                <div class="business-info">${testSettings.address}</div>
+                <div class="business-info">Ph: ${testSettings.phone}</div>
+                <div class="business-info">GSTIN: ${testSettings.gstin}</div>
+                <div class="line"></div>
+                
+                <div class="invoice-info">Invoice: ${testInvoice.invoice_number}</div>
+                <div class="invoice-info">Date: ${date} ${time}</div>
+                <div class="invoice-info">Customer: ${testInvoice.customer_name}</div>
+                <div class="invoice-info">Phone: ${testInvoice.customer_phone}</div>
+                <div class="line"></div>
+                
+                <div class="bold center">SERVICES</div>
+            `;
+            
+            testInvoice.items.forEach(item => {
+                receiptHTML += `
+                    <div class="service-item">
+                        <div class="item-row">
+                            <span>${item.service_name}</span>
+                            <span>₹${item.amount.toFixed(2)}</span>
+                        </div>
+                        <div class="service-details">
+                            ${item.quantity} ${item.unit} × ₹${item.rate.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            receiptHTML += `
+                <div class="line"></div>
+                <div class="item-row">
+                    <span>Subtotal:</span>
+                    <span>₹${testInvoice.subtotal.toFixed(2)}</span>
+                </div>
+                <div class="item-row">
+                    <span>Discount:</span>
+                    <span>-₹${testInvoice.discount.toFixed(2)}</span>
+                </div>
+                <div class="item-row">
+                    <span>GST (18%):</span>
+                    <span>₹${testInvoice.gst_amount.toFixed(2)}</span>
+                </div>
+                <div class="line"></div>
+                <div class="total-row">
+                    <span>TOTAL:</span>
+                    <span>₹${testInvoice.total.toFixed(2)}</span>
+                </div>
+                <div class="line"></div>
+                
+                <div class="footer-message">${testSettings.terms}</div>
+                <div class="footer-message">Visit Again!</div>
+                <div class="center">***</div>
+            `;
+            
+            printArea.innerHTML = receiptHTML;
+        }
+    </script>
+</body>
+</html>

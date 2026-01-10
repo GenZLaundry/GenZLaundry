@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test View Functionality - GenZ Laundry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+        }
+        .success { border-left-color: #28a745; }
+        .warning { border-left-color: #ffc107; }
+        .error { border-left-color: #dc3545; }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { background: #5a6fd8; }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>🧪 GenZ Laundry - View Button Test</h1>
+        <p>This page helps you test the invoice view functionality.</p>
+    </div>
+
+    <div class="test-card">
+        <h2>📋 Test Steps</h2>
+        
+        <div class="test-step">
+            <strong>Step 1:</strong> Make sure the server is running
+            <br><code>npm start</code>
+        </div>
+        
+        <div class="test-step">
+            <strong>Step 2:</strong> Open the main application
+            <br><a href="http://localhost:3000" target="_blank" class="btn">Open GenZ Laundry App</a>
+        </div>
+        
+        <div class="test-step">
+            <strong>Step 3:</strong> Login with default credentials
+            <br><strong>Email:</strong> admin@genzlaundry.com
+            <br><strong>Password:</strong> admin123
+        </div>
+        
+        <div class="test-step">
+            <strong>Step 4:</strong> Navigate to Invoices page
+            <br>Click on "Invoices" in the navigation menu
+        </div>
+        
+        <div class="test-step">
+            <strong>Step 5:</strong> Test the View button
+            <br>Click the "View" button on any invoice (test invoice should be available)
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>✅ Expected Results</h2>
+        
+        <div class="test-step success">
+            <strong>Invoice View Modal Should Show:</strong>
+            <ul>
+                <li>Invoice number and date/time</li>
+                <li>Customer information (name, phone, address)</li>
+                <li>Service items with quantities and rates</li>
+                <li>Subtotal, discount (if any), GST (if any), and total</li>
+                <li>Print button that works</li>
+                <li>Close button that works</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>🔧 Troubleshooting</h2>
+        
+        <div class="test-step warning">
+            <strong>If View button doesn't work:</strong>
+            <ul>
+                <li>Check browser console for JavaScript errors (F12)</li>
+                <li>Ensure server is running on port 3000</li>
+                <li>Try refreshing the page</li>
+                <li>Check if there are any invoices in the system</li>
+            </ul>
+        </div>
+        
+        <div class="test-step error">
+            <strong>If modal doesn't show properly:</strong>
+            <ul>
+                <li>Check if CSS files are loading correctly</li>
+                <li>Verify modal HTML is present in the page</li>
+                <li>Check for CSS conflicts</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>📊 Test Invoice Data</h2>
+        <p>A test invoice has been created with the following details:</p>
+        <ul>
+            <li><strong>Customer:</strong> Test Customer</li>
+            <li><strong>Phone:</strong> 9876543210</li>
+            <li><strong>Services:</strong> Washing (2kg × ₹50) + Dry Cleaning (1 piece × ₹50)</li>
+            <li><strong>Subtotal:</strong> ₹150</li>
+            <li><strong>Discount:</strong> ₹10</li>
+            <li><strong>GST:</strong> ₹25.20</li>
+            <li><strong>Total:</strong> ₹165.20</li>
+        </ul>
+    </div>
+
+    <div class="test-card">
+        <h2>🎯 Success Criteria</h2>
+        <div class="test-step success">
+            ✅ View button opens a modal with complete invoice details<br>
+            ✅ All data is displayed correctly and formatted properly<br>
+            ✅ Print button works from the view modal<br>
+            ✅ Modal can be closed using the close button or clicking outside<br>
+            ✅ No JavaScript errors in browser console
+        </div>
+    </div>
+</body>
+</html>
