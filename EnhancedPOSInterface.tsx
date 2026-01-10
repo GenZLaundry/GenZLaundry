@@ -62,16 +62,17 @@ const EnhancedPOSInterface: React.FC = () => {
   // Enhanced predefined items with more categories
   const [predefinedItems, setPredefinedItems] = useState([
     // Men's Clothing
-    { id: '1', name: 'Shirt (Cotton)', price: 50, category: 'CLOTHING' as const },
-    { id: '2', name: 'Shirt (Formal)', price: 60, category: 'CLOTHING' as const },
-    { id: '3', name: 'T-Shirt', price: 30, category: 'CLOTHING' as const },
-    { id: '4', name: 'Pant (Casual)', price: 70, category: 'CLOTHING' as const },
-    { id: '5', name: 'Pant (Formal)', price: 80, category: 'CLOTHING' as const },
-    { id: '6', name: 'Jeans', price: 90, category: 'CLOTHING' as const },
-    { id: '7', name: 'Suit (2 Piece)', price: 300, category: 'CLOTHING' as const },
-    { id: '8', name: 'Blazer', price: 200, category: 'CLOTHING' as const },
-    { id: '9', name: 'Kurta', price: 80, category: 'CLOTHING' as const },
-    { id: '10', name: 'Dhoti', price: 40, category: 'CLOTHING' as const },
+    { id: '1', name: 'Shirt', price: 50, category: 'CLOTHING' as const },
+    { id: '2', name: 'Shirt (Cotton)', price: 50, category: 'CLOTHING' as const },
+    { id: '3', name: 'Shirt (Formal)', price: 60, category: 'CLOTHING' as const },
+    { id: '4', name: 'T-Shirt', price: 30, category: 'CLOTHING' as const },
+    { id: '5', name: 'Pant (Casual)', price: 70, category: 'CLOTHING' as const },
+    { id: '6', name: 'Pant (Formal)', price: 80, category: 'CLOTHING' as const },
+    { id: '7', name: 'Jeans', price: 90, category: 'CLOTHING' as const },
+    { id: '8', name: 'Suit (2 Piece)', price: 300, category: 'CLOTHING' as const },
+    { id: '9', name: 'Blazer', price: 200, category: 'CLOTHING' as const },
+    { id: '10', name: 'Kurta', price: 80, category: 'CLOTHING' as const },
+    { id: '11', name: 'Dhoti', price: 40, category: 'CLOTHING' as const },
     
     // Women's Clothing
     { id: '11', name: 'Saree (Cotton)', price: 150, category: 'CLOTHING' as const },
@@ -1968,6 +1969,5 @@ const EnhancedPOSInterface: React.FC = () => {
     </div>
   );
 };
-
 
 export default EnhancedPOSInterface;
