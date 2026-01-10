@@ -42,7 +42,7 @@ const EnhancedPOSInterface: React.FC = () => {
   const [discount, setDiscount] = useState(0);
   const [gstRate, setGstRate] = useState(0); // Default GST 0%
   const [deliveryCharge, setDeliveryCharge] = useState(0); // Add delivery charge
-  const [businessName, setBusinessName] = useState('MANOHAR');
+  const [businessName, setBusinessName] = useState('GenZ');
   const [todayOrders, setTodayOrders] = useState(0);
   const [todayRevenue, setTodayRevenue] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'CARD' | 'UPI'>('CASH');
@@ -1968,5 +1968,6 @@ const EnhancedPOSInterface: React.FC = () => {
     </div>
   );
 };
+
 
 export default EnhancedPOSInterface;
