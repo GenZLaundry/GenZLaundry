@@ -9,6 +9,7 @@ import { dualPrinterManager, LaundryOrder } from './DualPrinterManager';
 import ThermalReceipt from './ThermalBillGenerator';
 import { LaundryTagsPreview } from './LaundryTagPreview';
 import AdminPanel from './AdminPanel';
+import { WebSerialFallback, getEnvironmentSpecificError } from './WebSerialFallback';
 
 const App: React.FC = () => {
   // State
@@ -201,10 +202,25 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Connect all printers with enhanced debugging
+  // Connect all printers with enhanced debugging and environment detection
   const handleConnectAllPrinters = async () => {
     try {
       console.log('🔌 Starting printer connection process...');
+      
+      // Check Web Serial API support first
+      const serialSupport = await WebSerialFallback.checkWebSerialSupport();
+      console.log('📊 Web Serial Support:', serialSupport);
+      
+      if (!serialSupport.supported) {
+        alert(`❌ WEB SERIAL API NOT SUPPORTED\n\n${serialSupport.reason}\n\n💡 SOLUTION:\n${serialSupport.solution}`);
+        return;
+      }
+
+      if (!serialSupport.available) {
+        const instructions = WebSerialFallback.getConnectionInstructions(window.location.hostname);
+        alert(`⚠️ USB CONNECTION LIMITATION\n\n${serialSupport.reason}\n\n${instructions}`);
+        return;
+      }
       
       // Show loading state
       alert('🔌 Connecting to printers...\n\nPlease wait while we establish connections.');
@@ -241,19 +257,33 @@ const App: React.FC = () => {
         message += '⚠️ Partial connection - some features may be limited.';
         message += '\n\n💡 TIP: Try connecting one printer at a time if issues persist.';
       } else {
-        message += '❌ No printers connected. Check USB connections and try again.';
-        message += '\n\n🔧 TROUBLESHOOTING:\n';
-        message += '• Ensure printers are powered on\n';
-        message += '• Check USB cable connections\n';
-        message += '• Use Chrome/Edge browser\n';
-        message += '• Allow serial port permissions\n';
-        message += '• Try connecting one printer at a time';
+        const isHosted = WebSerialFallback.isHostedEnvironment();
+        if (isHosted) {
+          message += '❌ No printers connected.\n\n';
+          message += '🌐 HOSTED ENVIRONMENT DETECTED (Render.com):\n';
+          message += 'Direct USB access may be limited on hosted platforms.\n\n';
+          message += '💡 RECOMMENDED SOLUTION:\n';
+          message += '• Use "ESC/POS DIRECT" method\n';
+          message += '• Copy commands to thermal printer software\n';
+          message += '• This bypasses browser limitations completely!\n\n';
+          message += '🔧 ALTERNATIVE:\n';
+          message += '• Run the POS system locally for full USB access';
+        } else {
+          message += '❌ No printers connected. Check USB connections and try again.';
+          message += '\n\n🔧 TROUBLESHOOTING:\n';
+          message += '• Ensure printers are powered on\n';
+          message += '• Check USB cable connections\n';
+          message += '• Use Chrome/Edge browser\n';
+          message += '• Allow serial port permissions\n';
+          message += '• Try connecting one printer at a time';
+        }
       }
       
       alert(message);
     } catch (error) {
       console.error('❌ Connection error:', error);
-      alert('❌ Connection Error:\n\n' + (error as Error).message + '\n\n🔧 Try:\n• Refresh the page\n• Check browser permissions\n• Ensure HTTPS/localhost');
+      const errorMessage = getEnvironmentSpecificError(error as Error);
+      alert(errorMessage);
     }
   };
 
@@ -338,6 +368,12 @@ const App: React.FC = () => {
           <div>
             <h1 className="text-2xl font-bold tracking-tighter uppercase">{shopConfig.shopName}</h1>
             <p className="text-xs opacity-80">{shopConfig.address}</p>
+            {WebSerialFallback.isHostedEnvironment() && (
+              <p className="text-xs bg-orange-600 text-white px-2 py-1 rounded mt-1">
+                <i className="fas fa-info-circle mr-1"></i>
+                Hosted Environment - Use ESC/POS Direct for printing
+              </p>
+            )}
           </div>
         </div>
         <div className="flex gap-4 items-center">
@@ -844,9 +880,17 @@ const App: React.FC = () => {
                   };
                   copyThermalESCPOS(billData);
                 }}
-                className="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-lg font-bold"
+                className={`px-6 py-2 rounded-lg font-bold ${
+                  WebSerialFallback.isHostedEnvironment() 
+                    ? 'bg-green-600 hover:bg-green-500 animate-pulse' 
+                    : 'bg-indigo-600 hover:bg-indigo-500'
+                }`}
               >
-                <i className="fas fa-code mr-2"></i> ESC/POS DIRECT
+                <i className="fas fa-code mr-2"></i> 
+                ESC/POS DIRECT
+                {WebSerialFallback.isHostedEnvironment() && (
+                  <span className="ml-2 text-xs">(RECOMMENDED)</span>
+                )}
               </button>
               
               <button 
