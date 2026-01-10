@@ -16,7 +16,7 @@
     box-sizing: border-box !important;
   }
 
-  /* Body setup for thermal printing */
+  /* Body setup for thermal printing - ENHANCED CLARITY */
   html, body {
     width: 80mm !important;
     height: auto !important;
@@ -24,10 +24,13 @@
     padding: 0 !important;
     background: white !important;
     color: black !important;
-    font-family: 'Courier New', monospace !important;
-    font-size: 9pt !important;
-    line-height: 1.1 !important;
+    font-family: 'Courier New', 'Consolas', 'Monaco', monospace !important;
+    font-size: 10pt !important; /* Slightly larger */
+    line-height: 1.2 !important;
     overflow: visible !important;
+    font-weight: bold !important; /* Bold for thermal clarity */
+    -webkit-font-smoothing: none !important;
+    -moz-osx-font-smoothing: unset !important;
   }
 
   /* Hide everything except thermal receipt */
@@ -40,39 +43,45 @@
     visibility: visible !important;
   }
 
-  /* Main thermal receipt container */
+  /* Main thermal receipt container - ENHANCED CLARITY */
   .thermal-receipt-container {
     width: 80mm !important;
     max-width: 80mm !important;
     height: auto !important;
     margin: 0 !important;
-    padding: 2mm !important;
+    padding: 3mm !important; /* More padding for readability */
     background: white !important;
     color: black !important;
-    font-family: 'Courier New', monospace !important;
-    font-size: 9pt !important;
-    line-height: 1.1 !important;
+    font-family: 'Courier New', 'Consolas', 'Monaco', monospace !important;
+    font-size: 10pt !important; /* Larger base font */
+    line-height: 1.2 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    font-weight: bold !important; /* Bold for thermal clarity */
+    -webkit-font-smoothing: none !important;
+    -moz-osx-font-smoothing: unset !important;
+    letter-spacing: 0.3px !important; /* Better character spacing */
   }
 
-  /* Business Header */
+  /* Business Header - ENHANCED CLARITY */
   .receipt-header {
     text-align: center !important;
-    margin-bottom: 2mm !important;
+    margin-bottom: 3mm !important; /* More spacing */
   }
 
   .business-name {
-    font-size: 14pt !important;
+    font-size: 15pt !important; /* Larger for clarity */
     font-weight: bold !important;
     text-transform: uppercase !important;
-    margin-bottom: 1mm !important;
+    margin-bottom: 1.5mm !important;
+    letter-spacing: 1px !important; /* Better spacing */
   }
 
   .business-address,
   .business-phone {
-    font-size: 8pt !important;
-    margin-bottom: 0.5mm !important;
+    font-size: 9pt !important; /* Slightly larger */
+    margin-bottom: 1mm !important;
+    font-weight: bold !important;
   }
 
   /* Dividers */

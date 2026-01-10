@@ -62,12 +62,16 @@ export const printThermalBill = (billData: BillData) => {
       width: 80mm !important;
       height: auto !important;
       margin: 0 !important;
-      padding: 2mm !important;
-      font-family: 'Courier New', monospace !important;
-      font-size: 9pt !important;
-      line-height: 1.1 !important;
+      padding: 3mm !important; /* More padding for readability */
+      font-family: 'Courier New', 'Consolas', 'Monaco', monospace !important;
+      font-size: 10pt !important; /* Larger base font */
+      line-height: 1.3 !important; /* Better line spacing */
       background: white !important;
       color: black !important;
+      font-weight: bold !important; /* Bold for thermal clarity */
+      -webkit-font-smoothing: none !important;
+      -moz-osx-font-smoothing: unset !important;
+      letter-spacing: 0.3px !important; /* Better character spacing */
     }
     
     .receipt {
@@ -79,8 +83,8 @@ export const printThermalBill = (billData: BillData) => {
     .left { text-align: left !important; }
     .right { text-align: right !important; }
     .bold { font-weight: bold !important; }
-    .large { font-size: 14pt !important; }
-    .small { font-size: 8pt !important; }
+    .large { font-size: 15pt !important; font-weight: bold !important; }
+    .small { font-size: 9pt !important; font-weight: bold !important; }
     .upper { text-transform: uppercase !important; }
     
     .row {
