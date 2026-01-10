@@ -30,11 +30,11 @@ export class TSCLabelPrinter {
 
   constructor(config: Partial<LabelConfig> = {}) {
     this.config = {
-      width: 50,    // 50mm width
-      height: 25,   // 25mm height
-      dpi: 203,     // 203 DPI
-      speed: 4,     // Speed 4
-      density: 8,   // Density 8
+      width: 50,    // 50mm width (standard for TL240)
+      height: 30,   // 30mm height (optimal for laundry tags)
+      dpi: 203,     // 203 DPI (TL240 specification)
+      speed: 4,     // Speed 4 (optimal for quality)
+      density: 10,  // Density 10 (darker print for TL240)
       ...config
     };
   }
@@ -84,9 +84,9 @@ export class TSCLabelPrinter {
     if (!this.writer) return;
 
     const commands = [
-      'SIZE 50 mm, 25 mm\r\n',     // Set label size
+      'SIZE 50 mm, 30 mm\r\n',     // Set label size for TL240
       'SPEED 4\r\n',               // Set print speed
-      'DENSITY 8\r\n',             // Set print density
+      'DENSITY 10\r\n',            // Set print density (darker for TL240)
       'DIRECTION 1\r\n',           // Set print direction
       'SET RIBBON OFF\r\n',        // Thermal transfer off (direct thermal)
       'SET TEAR ON\r\n',           // Enable tear-off

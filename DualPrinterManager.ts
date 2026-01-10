@@ -5,6 +5,7 @@ import { BillData } from './ThermalPrintManager';
 import { LaundryTag } from './TSCLabelPrinter';
 import { usbThermalPrinter } from './DirectUSBPrinter';
 import { tscLabelPrinter } from './TSCLabelPrinter';
+import { PRINTER_SPECS } from './PrinterConfig';
 
 export interface LaundryOrder {
   // Business info
@@ -63,12 +64,12 @@ export class DualPrinterManager {
     return {
       thermal: {
         connected: this.thermalConnected,
-        name: 'SP-POS893UED (80mm Thermal)',
+        name: `${PRINTER_SPECS.thermal.model} (${PRINTER_SPECS.thermal.paperWidth}mm Thermal Receipt)`,
         status: this.thermalConnected ? 'READY' : 'DISCONNECTED'
       },
       tsc: {
         connected: this.tscConnected,
-        name: 'TSC TL240 (Label Printer)',
+        name: `${PRINTER_SPECS.tsc.model} (${PRINTER_SPECS.tsc.dpi} DPI Barcode/Label)`,
         status: this.tscConnected ? 'READY' : 'DISCONNECTED'
       }
     };

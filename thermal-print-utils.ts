@@ -338,11 +338,13 @@ export const generateESCPOSCommands = (receiptData: {
   
   let commands = '';
   
-  // Initialize printer
-  commands += ESC + '@'; // Initialize
-  commands += ESC + 'a' + '\x01'; // Center align
+  // Initialize printer and set compact mode
+  commands += ESC + '@'; // Initialize printer
+  commands += ESC + 'M' + '\x01'; // Select font A (compact)
+  commands += ESC + '3' + '\x18'; // Set line spacing to 24/180 inch (compact)
   
-  // Header
+  // Header (Center aligned)
+  commands += ESC + 'a' + '\x01'; // Center align
   commands += ESC + '!' + '\x18'; // Double height + bold
   commands += receiptData.shopName + '\n';
   commands += ESC + '!' + '\x00'; // Normal text
@@ -351,32 +353,35 @@ export const generateESCPOSCommands = (receiptData: {
   
   // Separator line
   commands += ESC + 'a' + '\x00'; // Left align
-  commands += '--------------------------------\n';
+  commands += '================================\n';
   
-  // Order info
+  // Order info (compact)
   commands += 'CUST: ' + receiptData.customerName + '\n';
   commands += 'ORDER: ' + receiptData.orderId + '\n';
-  commands += 'DATE: ' + new Date().toLocaleString('en-IN') + '\n';
-  commands += '--------------------------------\n';
+  commands += 'DATE: ' + new Date().toLocaleString('en-IN', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  }) + '\n';
+  commands += '================================\n';
   
   // Items header
-  commands += 'ITEM                QTY   PRICE\n';
+  commands += 'ITEM'.padEnd(16) + 'QTY'.padStart(4) + 'PRICE'.padStart(8) + '\n';
   commands += '--------------------------------\n';
   
-  // Items
+  // Items (compact formatting)
   receiptData.items.forEach(item => {
-    const itemLine = item.name.padEnd(16).substring(0, 16) + 
-                    item.quantity.toString().padStart(3) + 
-                    ('₹' + (item.price * item.quantity)).padStart(8);
-    commands += itemLine + '\n';
+    const itemName = item.name.length > 16 ? item.name.substring(0, 16) : item.name.padEnd(16);
+    const qty = item.quantity.toString().padStart(4);
+    const price = ('₹' + (item.price * item.quantity)).padStart(8);
+    commands += itemName + qty + price + '\n';
   });
   
   commands += '--------------------------------\n';
   
-  // Totals
-  commands += ('Subtotal:' + '₹' + receiptData.subtotal).padStart(32) + '\n';
+  // Totals (compact)
+  commands += ('Subtotal: ₹' + receiptData.subtotal).padStart(32) + '\n';
   if (receiptData.discount > 0) {
-    commands += ('Discount:' + '-₹' + receiptData.discount).padStart(32) + '\n';
+    commands += ('Discount: -₹' + receiptData.discount).padStart(32) + '\n';
   }
   commands += '================================\n';
   commands += ESC + '!' + '\x08'; // Bold
@@ -384,21 +389,24 @@ export const generateESCPOSCommands = (receiptData: {
   commands += ESC + '!' + '\x00'; // Normal
   commands += '================================\n';
   
-  // Footer
+  // Footer (minimal spacing)
   commands += ESC + 'a' + '\x01'; // Center align
-  commands += '\n';
-  commands += 'Your clothes, cared for with\n';
-  commands += 'Gen-Z speed.\n';
-  commands += '\n';
+  commands += 'Your clothes, cared for with Gen-Z speed.\n';
   commands += ESC + '!' + '\x08'; // Bold
   commands += 'THANK YOU!\n';
   commands += ESC + '!' + '\x00'; // Normal
-  commands += '\n';
-  commands += 'Powered by GenZLaundry-POS\n';
   
-  // Cut paper
-  commands += '\n\n\n';
+  // Minimal spacing before cut
+  commands += '\n'; // Just one line feed
+  
+  // Multiple cut commands for reliability
+  commands += GS + 'V' + '\x41' + '\x03'; // Partial cut (3 dots)
   commands += GS + 'V' + '\x42' + '\x00'; // Full cut
+  commands += ESC + 'm'; // Partial cut (alternative command)
+  
+  // Feed and cut (SP-POS893UED specific)
+  commands += ESC + 'd' + '\x02'; // Feed 2 lines
+  commands += ESC + 'i'; // Immediate cut
   
   return commands;
 };
