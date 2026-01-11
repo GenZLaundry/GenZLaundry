@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { printThermalBill, BillData } from './ThermalPrintManager';
+import { directThermalPrinter } from './DirectThermalIntegration';
 
 interface OrderItem {
   id: string;
@@ -420,50 +421,89 @@ const EnhancedPOSInterface: React.FC<EnhancedPOSInterfaceProps> = ({ onLogout })
     printWindow.document.close();
   };
 
-  const printBill = () => {
+  const printBill = async () => {
     if (!customer.name) {
       alert('Please enter customer name');
       return;
     }
 
-    const billData: BillData = {
+    // First try direct thermal printing
+    const receiptData = {
       businessName: businessName,
       address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
       phone: '+91 9256930727',
-      billNumber: `${businessName.substring(0,2).toUpperCase()}${Date.now().toString().slice(-6)}`,
       customerName: customer.name,
+      billNumber: `${businessName.substring(0,2).toUpperCase()}${Date.now().toString().slice(-6)}`,
       items: orderItems.map(item => ({
         name: `${item.name} (${item.washType})`,
         quantity: item.quantity,
-        rate: item.price,
         amount: item.price * item.quantity
       })),
       subtotal: calculateSubtotal(),
       discount: discount,
-      gst: calculateGST(),
-      grandTotal: calculateTotal(),
-      thankYouMessage: `Thank you for choosing ${businessName}!`
+      deliveryCharge: deliveryCharge,
+      grandTotal: calculateTotal()
     };
 
-    // Add delivery charge as separate line item if applicable
-    if (deliveryCharge > 0) {
-      billData.items.push({
-        name: 'Delivery Charge',
-        quantity: 1,
-        rate: deliveryCharge,
-        amount: deliveryCharge
-      });
-    }
+    try {
+      // Try direct thermal printing first
+      const result = await directThermalPrinter.printReceipt(receiptData);
+      
+      if (result.success) {
+        alert('✅ Bill printed successfully on thermal printer!');
+        
+        // Update daily stats
+        const newOrderCount = todayOrders + 1;
+        const newRevenue = todayRevenue + calculateTotal();
+        setTodayOrders(newOrderCount);
+        setTodayRevenue(newRevenue);
+        localStorage.setItem('todayOrders', newOrderCount.toString());
+        localStorage.setItem('todayRevenue', newRevenue.toString());
+        
+        return;
+      } else {
+        console.log('Direct thermal printing failed:', result.message);
+        // Fall back to browser printing
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.log('Falling back to browser printing:', error.message);
+      
+      // Fallback to browser print dialog
+      const billData: BillData = {
+        businessName: businessName,
+        address: 'Sabji Mandi Circle, Ratanada Jodhpur-342022',
+        phone: '+91 9256930727',
+        billNumber: receiptData.billNumber,
+        customerName: customer.name,
+        items: receiptData.items,
+        subtotal: receiptData.subtotal,
+        discount: discount,
+        gst: calculateGST(),
+        grandTotal: receiptData.grandTotal,
+        thankYouMessage: `Thank you for choosing ${businessName}!`
+      };
 
-    printThermalBill(billData);
-    
-    // Update daily stats
-    const newOrderCount = todayOrders + 1;
-    const newRevenue = todayRevenue + calculateTotal();
-    setTodayOrders(newOrderCount);
-    setTodayRevenue(newRevenue);
-    localStorage.setItem('todayOrders', newOrderCount.toString());
-    localStorage.setItem('todayRevenue', newRevenue.toString());
+      // Add delivery charge as separate line item if applicable
+      if (deliveryCharge > 0) {
+        billData.items.push({
+          name: 'Delivery Charge',
+          quantity: 1,
+          rate: deliveryCharge,
+          amount: deliveryCharge
+        });
+      }
+
+      printThermalBill(billData);
+      
+      // Update daily stats
+      const newOrderCount = todayOrders + 1;
+      const newRevenue = todayRevenue + calculateTotal();
+      setTodayOrders(newOrderCount);
+      setTodayRevenue(newRevenue);
+      localStorage.setItem('todayOrders', newOrderCount.toString());
+      localStorage.setItem('todayRevenue', newRevenue.toString());
+    }
   };
 
   const clearOrder = () => {
