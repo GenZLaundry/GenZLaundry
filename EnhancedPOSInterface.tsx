@@ -437,7 +437,7 @@ const EnhancedPOSInterface: React.FC<EnhancedPOSInterfaceProps> = ({ onLogout })
       items: orderItems.map(item => ({
         name: `${item.name} (${item.washType})`,
         quantity: item.quantity,
-        rate: item.price,
+        rate: item.price, // FIX: Added rate field to prevent "undefined" in bills
         amount: item.price * item.quantity
       })),
       subtotal: calculateSubtotal(),
@@ -616,24 +616,6 @@ const EnhancedPOSInterface: React.FC<EnhancedPOSInterfaceProps> = ({ onLogout })
             </p>
           </div>
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '12px 20px',
-              borderRadius: '25px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '14px', fontWeight: 'bold' }}>Today's Orders</div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{todayOrders}</div>
-            </div>
-            <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '12px 20px',
-              borderRadius: '25px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '14px', fontWeight: 'bold' }}>Today's Revenue</div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold' }}>₹{todayRevenue}</div>
-            </div>
             <div style={{
               background: 'rgba(255,255,255,0.2)',
               padding: '10px 18px',
