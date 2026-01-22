@@ -437,6 +437,7 @@ const EnhancedPOSInterface: React.FC<EnhancedPOSInterfaceProps> = ({ onLogout })
       items: orderItems.map(item => ({
         name: `${item.name} (${item.washType})`,
         quantity: item.quantity,
+        rate: item.price,
         amount: item.price * item.quantity
       })),
       subtotal: calculateSubtotal(),
